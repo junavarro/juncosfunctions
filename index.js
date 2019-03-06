@@ -26,16 +26,7 @@ exports.updateEventsLabels = functions.firestore
     .onWrite((change, context) => {
         const singleEvent = change.after.data();
         const disciplineKey = singleEvent.discipline.disciplineKey;
-        var labels={
-            'top_left' : 'top_left',
-            'top_center' : 'top_center',
-            'top_right' : 'top_right',
-            'bottom_left' : 'bottom_left',
-            'bottom_cleft' : 'bottom_cleft',
-            'bottom_center' : 'bottom_center',
-            'bottom_cright' : 'bottom_cright',
-            'bottom_right' : 'bottom_right'
-        };
+        
         //update labels for football, indoor football, volleyball, basketball, pingpong
         if  (disciplineKey === 'basketball' ||  
             disciplineKey === 'football' || 
@@ -44,23 +35,35 @@ exports.updateEventsLabels = functions.firestore
             disciplineKey === 'volleyball'){
 
             var eventTime =  new Date(singleEvent.date);
-            var eventHour = eventTime.getHours()+6 < 10 ? '0'+ eventTime.getHours()+6 : eventTime.getHours()+6 ;
+            var eventHour = eventTime.getUTCHours()+6 < 10 ? '0'+ eventTime.getHours()+6 : eventTime.getHours()+6 ;
             var eventMinute = eventTime.getMinutes() < 10 ? '0' + eventTime.getMinutes(): eventTime.getMinutes();
             var timeTag = eventHour > 11 ? 'pm':'am';
             
+
         
             var top_left = `${eventHour} : ${eventMinute} ${timeTag}`;
         
-            // var top_center = singleEvent.hit.displayName;
-            // var top_right = singleEvent.branch.displayName;
+            var top_center = singleEvent.hit.displayName;
+            var top_right = singleEvent.branch.displayName;
         
-            // var bottom_left = singleEvent.data[0].list[0].headers[0].displayText;
-            // var bottom_cleft = singleEvent.data[0].list[0].points[0].displayData;
+            var bottom_left = singleEvent.data[0].list[0].headers[0].displayText;
+            var bottom_cleft = singleEvent.data[0].list[0].points[0].displayData;
         
-            // var bottom_center = '-';
+            var bottom_center = '-';
             
-            // var bottom_cright = singleEvent.data[0].list[0].points[0].displayText;
-            // var bottom_right = singleEvent.data[0].list[0].headers[1].displayData;
+            var bottom_cright = singleEvent.data[0].list[0].points[1].displayData;
+            var bottom_right = singleEvent.data[0].list[0].headers[1].displayText;
+            var labels={
+                'top_left' : top_left,
+                'top_center' : top_center,
+                'top_right' : top_right,
+                'bottom_left' : bottom_left,
+                'bottom_cleft' : bottom_cleft,
+                'bottom_center' : bottom_center,
+                'bottom_cright' : bottom_cright,
+                'bottom_right' : bottom_right
+            };
+            console.log(labels);
         } else {
             //labels = tabularSportLabels(change);           
         }
